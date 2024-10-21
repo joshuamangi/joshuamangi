@@ -2,6 +2,12 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 
+import '../pages/about_me.dart';
+import '../pages/activity.dart';
+import '../pages/contact.dart';
+import '../pages/portfolio.dart';
+import '../pages/resume.dart';
+
 class PageLayout extends StatefulWidget {
   const PageLayout({super.key});
 
@@ -13,15 +19,21 @@ class PageLayout extends StatefulWidget {
 class _PageLayoutState extends State<PageLayout> {
   // Map of all pages
   final Map<String, Map<String, dynamic>> pages = {
-    'portfolio': {'position': 1, 'navigation': Portfolio()},
-    'about me': {'position': 2, 'navigation': About_Me()},
-    'resume': {'position': 3, 'navigation': Resume()},
-    'activity': {'position': 4, 'navigation': Activity()},
-    'contact': {'position': 5, 'navigation': Contact()},
+    'portfolio': {'position': 1, 'navigation': const Portfolio()},
+    'about me': {'position': 2, 'navigation': const AboutMe()},
+    'resume': {'position': 3, 'navigation': const Resume()},
+    'activity': {'position': 4, 'navigation': const Activity()},
+    'contact': {'position': 5, 'navigation': const Contact()},
   };
   Map<String, Map<String, dynamic>> initialShownPages = {};
+  dynamic leftSidePage;
+  dynamic mainContentPage;
+  dynamic rightSidePage;
   _PageLayoutState() {
     initialShownPages = _initializeShownPages();
+    leftSidePage = initialShownPages.values.elementAt(0)['navigation'];
+    mainContentPage = initialShownPages.values.elementAt(1)['navigation'];
+    rightSidePage = initialShownPages.values.elementAt(2)['navigation'];
   }
 
   Map<String, Map<String, dynamic>> _initializeShownPages() {
@@ -34,7 +46,7 @@ class _PageLayoutState extends State<PageLayout> {
   ) {
     int pageLength = pages.length;
 
-    List<MapEntry<String, Map<String, dynamic>>> _updateEntries(
+    List<MapEntry<String, Map<String, dynamic>>> updateEntries(
       List<MapEntry<String, Map<String, dynamic>>> entries,
       int removeIndex,
       int insertIndex,
@@ -54,21 +66,21 @@ class _PageLayoutState extends State<PageLayout> {
           reArrangeShownPages.entries.toList();
       if (reArrangeShownPages.values.first['position'] == 1) {
         int workingIndex = pageLength - 1;
-        pageEntries = _updateEntries(pageEntries, 2, 0, workingIndex);
+        pageEntries = updateEntries(pageEntries, 2, 0, workingIndex);
       } else {
         int firstPage = reArrangeShownPages.values.first['position'];
         int pageToAdd = firstPage - 2;
-        pageEntries = _updateEntries(pageEntries, 2, 0, pageToAdd);
+        pageEntries = updateEntries(pageEntries, 2, 0, pageToAdd);
       }
       reArrangeShownPages = Map.fromEntries(pageEntries);
     } else {
       List<MapEntry<String, Map<String, dynamic>>> pageEntries =
           reArrangeShownPages.entries.toList();
       if (reArrangeShownPages.values.elementAt(2)['position'] == pageLength) {
-        pageEntries = _updateEntries(pageEntries, 0, 2, 0);
+        pageEntries = updateEntries(pageEntries, 0, 2, 0);
       } else {
         int lastPage = reArrangeShownPages.values.last['position'];
-        pageEntries = _updateEntries(pageEntries, 0, 2, lastPage);
+        pageEntries = updateEntries(pageEntries, 0, 2, lastPage);
       }
       reArrangeShownPages = Map.fromEntries(pageEntries);
     }
@@ -76,10 +88,13 @@ class _PageLayoutState extends State<PageLayout> {
     return reArrangeShownPages;
   }
 
-  void triggerPageReload(
+  void triggerPageLayoutReload(
       bool sideClicked, Map<String, Map<String, dynamic>> shownPages) {
     setState(() {
       initialShownPages = _getDisplayPages(sideClicked, shownPages);
+      leftSidePage = initialShownPages.values.elementAt(0)['navigation'];
+      mainContentPage = initialShownPages.values.elementAt(1)['navigation'];
+      rightSidePage = initialShownPages.values.elementAt(2)['navigation'];
     });
   }
 
@@ -90,6 +105,7 @@ class _PageLayoutState extends State<PageLayout> {
       body: Column(
         // Header
         children: [
+          // Header
           Container(
             height: 385,
             padding: const EdgeInsets.symmetric(vertical: 30),
@@ -163,11 +179,13 @@ class _PageLayoutState extends State<PageLayout> {
                             // Middle cell, not clickable
                             return TableCell(child: cellContent);
                           }
+                          // Right button
                           if (index == 2) {
                             return TableCell(
                               child: InkWell(
                                 onTap: () {
-                                  triggerPageReload(false, initialShownPages);
+                                  triggerPageLayoutReload(
+                                      false, initialShownPages);
                                 },
                                 child: sideCellContent,
                               ),
@@ -177,7 +195,8 @@ class _PageLayoutState extends State<PageLayout> {
                             return TableCell(
                               child: InkWell(
                                 onTap: () {
-                                  triggerPageReload(true, initialShownPages);
+                                  triggerPageLayoutReload(
+                                      true, initialShownPages);
                                 },
                                 child: sideCellContent,
                               ),
@@ -191,18 +210,48 @@ class _PageLayoutState extends State<PageLayout> {
               ],
             ),
           ),
+          //   Body
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double totalWidth = constraints.maxWidth;
+                double sideColumnWidth =
+                    totalWidth * 0.1; // 10% of the page width
+                double middleColumnWidth =
+                    totalWidth * 0.8; // 80% of the page width
+
+                return Row(
+                  children: [
+                    // Left Column - 10%
+                    SizedBox(
+                      width: sideColumnWidth,
+                      child: Container(
+                        color: Colors.blue,
+                        child: leftSidePage, // Your left side content
+                      ),
+                    ),
+                    // Middle Column - 80%
+                    SizedBox(
+                      width: middleColumnWidth,
+                      child: Container(
+                        child: mainContentPage, // Your main content
+                      ),
+                    ),
+                    // Right Column - 10%
+                    SizedBox(
+                      width: sideColumnWidth,
+                      child: Container(
+                        color: Colors.red,
+                        child: rightSidePage, // Your right side content
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 }
-
-class Contact {}
-
-class Activity {}
-
-class Resume {}
-
-class About_Me {}
-
-class Portfolio {}
