@@ -5,6 +5,7 @@ class Portfolio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Portfolio");
+    return const Text(
+        "Built an applications and infrastructure monitoring tool in use to monitor services and uptime. [go]");
   }
 }

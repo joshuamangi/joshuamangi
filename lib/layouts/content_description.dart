@@ -7,7 +7,7 @@ class ContentDescription extends StatelessWidget {
   final Widget sectionContent;
   final String? textAlign;
 
-  ContentDescription({
+  const ContentDescription({
     super.key,
     required this.displayedIcon,
     required this.sectionTitle,
@@ -31,32 +31,42 @@ class ContentDescription extends StatelessWidget {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xFFB7C6C9),
+                          color: const Color(0xFFBAC5C8),
                           width: 3,
                         )),
                     child: FaIcon(
                       displayedIcon,
-                      size: 22,
-                      color: const Color(0xFFB7C6C9),
+                      size: 18,
+                      color: const Color(0xFFBAC5C8),
                     )),
                 const SizedBox(
                   width: 10,
                 ), //   Section Title passed to be added here
-                Text(sectionTitle),
+                Container(
+                    child: Text(
+                  sectionTitle,
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.1,
+                  ),
+                )),
                 const SizedBox(
                   width: 10,
                 ),
                 //   Line divider
                 const Expanded(
                     child: Divider(
-                  color: Color(0xFFB7C6C9),
-                  thickness: 4,
+                  color: Color(0xFFDEE4E6),
+                  thickness: 3,
                   height: 5,
                 ))
               ],
             ),
           ),
-          sectionContent,
+          Container(
+            child: sectionContent,
+          ),
         ],
       ),
     );

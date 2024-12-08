@@ -13,9 +13,10 @@ class AboutMe extends StatefulWidget {
 
 class _AboutMeState extends State<AboutMe> {
   List<String> whoAmI = [
-    "Software Engineer",
-    "Devops Engineer",
-    "Body weight exercise lover"
+    "Joshua Mangi",
+    "a Software Engineer",
+    "a Devops Engineer",
+    "a Body weight exercise lover",
   ];
   int currentIndex = 0;
   Timer? _timer;
@@ -41,26 +42,58 @@ class _AboutMeState extends State<AboutMe> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: ContentDescription(
-            displayedIcon: FontAwesomeIcons.user,
-            sectionTitle: "A LITTLE ABOUT ME",
-            sectionContent:
-                Center(child: Text("Hello I am  a " + whoAmI[currentIndex])),
+    return Container(
+      // width: double.infinity, // Provides finite width
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: ContentDescription(
+              displayedIcon: FontAwesomeIcons.user,
+              sectionTitle: "A LITTLE ABOUT ME",
+              sectionContent: Center(
+                child: Column(
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "Hi, I am ${whoAmI[currentIndex]}.\nI am a Kenyan software engineer and automation engineer",
+                          ),
+                          const TextSpan(
+                            text: "\n(currently @ Save the Children)",
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const TextSpan(
+                              text:
+                                  "\nI have a passion for programming across various platforms and writing code that solves problems."),
+                        ],
+                      ),
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w100,
+                          letterSpacing: 0.1),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-        Expanded(
-          flex: 1,
-          child: ContentDescription(
-            displayedIcon: FontAwesomeIcons.twitter,
-            sectionTitle: "CONNECT",
-            sectionContent: Center(child: Text("Hello, this is me")),
+          const Expanded(
+            flex: 1,
+            child: ContentDescription(
+              displayedIcon: FontAwesomeIcons.twitter,
+              sectionTitle: "CONNECT",
+              sectionContent: Center(child: Text("Hello, this is me")),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
